@@ -11,12 +11,13 @@
   <script>
     
     let exercise_list = [];
+    let userData;
     async function getExerciseList(){
       
       const response = await fetch("/user-info");
       
-      let temp = await response.json();
-      exercise_list = temp.exerciseList;
+      userData = await response.json();
+      exercise_list = userData.exerciseList;
       exercise_list.sort();
     }
     window.onload = getExerciseList();
@@ -138,7 +139,7 @@
 
                   // exercise setting selector
                   const settingSelector = document.createElement("select");
-                  settingSelector.id = "weightSetting";
+                  settingSelector.id = "weightSetting"+String(exercise_Counter);
                   settingSelector.className = "weight-setting";
                   const defaultSetting = document.createElement("option");
                   defaultSetting.innerHTML = "Normal";
@@ -152,8 +153,22 @@
                   settingSelector.appendChild(percentage);
                   let bodyweight = document.createElement("option");
                   bodyweight.innerHTML = "Bodyweight";
-                  bodyweight.value = 1;
+                  bodyweight.value = 2;
                   settingSelector.appendChild(bodyweight);
+                  settingSelector.onchange = () => {
+                    let _repList = document.getElementById("repList"+String(exercise_Counter));
+                    let newWeightLabel = _repList.children[0].children[0];
+                    // console.log(_repList.children[0].children[0], _repList.children[0].children[1])
+                    if (settingSelector.value == 0) {
+                      newWeightLabel.innerHTML = "Weight (" + String(userData.settings.units) + ")";
+                    }
+                    else if (settingSelector.value == 1){
+                      newWeightLabel.innerHTML = "% of TM";
+                    }
+                    else{
+                      newWeightLabel.innerHTML = "Extra Weight ("+ String(userData.settings.units) + ")";
+                    }
+                  }
 
                   
   
@@ -298,9 +313,9 @@
                   });
                 function sendForm() {
                   data = document.getElementsByClassName("template-form");
-                  //let form_HTML = document.getElementById("templateForm").innerHTML;
+                  let form_HTML = document.getElementById("templateForm").innerHTML;
   
-                  // console.log(formHTML, typeof(formHTML));
+                  console.log(form_HTML, typeof(form_HTML));
   
                   let templateName = data[0][0].value;
                   if (templateName == "") {
@@ -315,8 +330,9 @@
                     }
                   }
                   class exercise {
-                    constructor(name) {
+                    constructor(name, setting) {
                       this.name = name;
+                      this.setting = setting;
                       this.weight_rep_list = [];
                     }
                   }
@@ -331,16 +347,23 @@
                   let workoutTemplate = new workout(templateName);
   
                   for (let i = 0; i < data[0].length; i++) {
+                    
+
                     if (data[0][i].className == "exercise-name-input") {
                       if (data[0][i].value == -1) {
                         alert("ERROR: Please pick an exercise");
                         return false;
                       }
-                      let tempExercise = new exercise(exercise_list[data[0][i].value]);
-                      
+                      let setting;
+                      if (data[0][i+1].className == "weight-setting"){
+                        if(data[0][i+1].value == 0) setting = "normal";
+                        if(data[0][i+1].value == 1) setting = "percentage";
+                        if(data[0][i+1].value == 2) setting = "bodyweight";
+                      }
+                      tempExercise = new exercise(exercise_list[data[0][i].value], setting);
   
                       for (
-                        let j = i + 1;
+                        let j = i + 2;
                         data[0][j].className != "add-set-button";
                         j += 2
                       ) {
