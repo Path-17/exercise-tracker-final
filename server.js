@@ -89,9 +89,7 @@ app.get('/logout', (req,res)=>{
 app.get('/user-info', checkAuthenticated, async (req, res)=>{
     const userid = req.user.id;
     const userData = await getUserData(userid);
-    console.log(userData)
     res.json(userData);
-    
 })
 
 function checkAuthenticated(req, res, next){

@@ -17,7 +17,7 @@
       
       let temp = await response.json();
       exercise_list = temp.exerciseList;
-      
+      exercise_list.sort();
     }
     window.onload = getExerciseList();
   </script>
@@ -128,7 +128,6 @@
                   defaultExercise.value = -1;
                   exerciseSelector.appendChild(defaultExercise);
                   exerciseDiv.appendChild(exerciseSelector);
-  
                   // adds all the options to the selector
                   for(let i = 0 ; i < exercise_list.length ; i++){
                     const temp = document.createElement("option");
@@ -136,10 +135,30 @@
                     temp.value = i;
                     exerciseSelector.appendChild(temp);
                   }
+
+                  // exercise setting selector
+                  const settingSelector = document.createElement("select");
+                  settingSelector.id = "weightSetting";
+                  settingSelector.className = "weight-setting";
+                  const defaultSetting = document.createElement("option");
+                  defaultSetting.innerHTML = "Normal";
+                  defaultSetting.value = 0;
+                  settingSelector.appendChild(defaultSetting);
+                  exerciseDiv.appendChild(settingSelector);
+                  // adds all the options to the setting selector
+                  let percentage = document.createElement("option");
+                  percentage.innerHTML = "Percentage";
+                  percentage.value = 1;
+                  settingSelector.appendChild(percentage);
+                  let bodyweight = document.createElement("option");
+                  bodyweight.innerHTML = "Bodyweight";
+                  bodyweight.value = 1;
+                  settingSelector.appendChild(bodyweight);
+
+                  
   
-  
-  
-  
+                  
+
                   // now need to create the rep list attached to the specific exercise
                   const repList = document.createElement("ul");
                   repList.className = "rep-list";
