@@ -92,6 +92,11 @@ app.get('/user-info', checkAuthenticated, async (req, res)=>{
     res.json(userData);
 })
 
+app.post('/workout-post', checkAuthenticated, async (req, res)=>{
+    const userid = req.user.id;
+    
+})
+
 function checkAuthenticated(req, res, next){
 
     let token = req.cookies['session-token'];

@@ -58,14 +58,16 @@
             let workoutNames = [];
             let templateList = [];
             async function getTemplateNames() {
-              const response = await fetch("/template-get");
+              const response = await fetch("/user-info");
               const data = await response.json();
-              templateList = data;
+              templateList = data.templateList;
+              console.log(data)
   
-              for (let i = 0; i < data.length; i++) {
-                workoutNames.push(data[i].name);
+              for (let i = 0; i < templateList.length; i++) {
+                workoutNames.push(templateList[i].name);
               }
             }
+            console.log(workoutNames);
             const setWorkoutOptions = async () => {
               const done = await getTemplateNames();
   
@@ -76,6 +78,7 @@
               templateSelect.appendChild(defaultOption);
   
               // appends all the template names as options
+              
               for (let i = 0; i < workoutNames.length; i++) {
                 let option = document.createElement("option");
                 option.innerHTML = workoutNames[i];
@@ -233,7 +236,7 @@
                 const saveWorkoutBtn = document.createElement("button");
                 saveWorkoutBtn.innerHTML = "Save Workout & Update Template";
                 saveWorkoutBtn.className = "save-workout-button";
-                workoutDiv.appendChild(saveWorkoutBtn);
+                document.getElementById("templateForm").appendChild(saveWorkoutBtn);
   
                 
   
@@ -267,6 +270,7 @@
   
                   console.log(selectedWorkout);
                   selectedWorkout.time = Date.now();
+                  selectedWorkout.day = selectedWorkout.time.
   
                   const options = {
                     method: "POST",
@@ -275,6 +279,7 @@
                     },
                     body: JSON.stringify(selectedWorkout),
                   }
+                  console.log(selectedWorkout)
                   
                   fetch("/workout-post", options);
                   sleep(100);
